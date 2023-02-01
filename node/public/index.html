@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Sample formulier</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+
+    <div class="jumbotron">
+        <div class="container">
+        <h1 class="display-4">Sample formulier</h1>
+        <p class="lead">Dit is een voorbeeld van een formulier</p>
+    </div>
+    </div>
+
+    <div class="container">
+        <form action="/form" method="POST">
+            <p>
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title">
+        </p>
+        <p>
+            <label for="user">User</label>
+            <select name="user" id="user">
+            
+            </select>
+        </p>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // The dropdown should be filled with users from the route /users.
+            fetch('/users')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.querySelector('select');
+                data.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.name;
+                    select.appendChild(option);
+                });
+            });
+
+            const form = document.querySelector('form');
+            form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            fetch('/ticket', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => console.log(data));
+            });
+        });
+    </script>
+
+  </body>
